@@ -4,6 +4,7 @@ import com.shoestore.shoestoreWeb.dto.request.UserCreationRequest;
 import com.shoestore.shoestoreWeb.dto.request.UserUpdateRequest;
 import com.shoestore.shoestoreWeb.entity.User;
 import com.shoestore.shoestoreWeb.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping()
-    public User createUser(@RequestBody UserCreationRequest request){
+    public User createUser(@RequestBody @Valid UserCreationRequest request){
         return userService.createUser(request);
 
     }
