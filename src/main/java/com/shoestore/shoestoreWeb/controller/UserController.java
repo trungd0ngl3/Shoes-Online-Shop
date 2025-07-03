@@ -1,5 +1,6 @@
 package com.shoestore.shoestoreWeb.controller;
 
+import com.shoestore.shoestoreWeb.dto.request.ApiResponse;
 import com.shoestore.shoestoreWeb.dto.request.UserCreationRequest;
 import com.shoestore.shoestoreWeb.dto.request.UserUpdateRequest;
 import com.shoestore.shoestoreWeb.entity.User;
@@ -17,9 +18,10 @@ public class UserController {
     private UserService userService;
 
     @PostMapping()
-    public User createUser(@RequestBody @Valid UserCreationRequest request){
-        return userService.createUser(request);
-
+    public ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest request){
+        ApiResponse<User> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(userService.createUser(request));
+        return apiResponse;
     }
 
     @GetMapping()
@@ -28,19 +30,26 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public User getUser(@PathVariable String userId){
-        return userService.getUser(userId);
+    public ApiResponse<User> getUser(@PathVariable String userId){
+        ApiResponse<User> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(userService.getUser(userId));
+        return apiResponse;
     }
 
     @PutMapping("/{userId}")
-    public User updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request){
-        return userService.updateUser(userId, request);
+    public ApiResponse<User> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request){
+        ApiResponse<User> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(userService.updateUser(userId, request));
+        return apiResponse;
     }
 
     @DeleteMapping("/{userId}")
-    public String deleteUser(@PathVariable String userId){
+    public ApiResponse<User> deleteUser(@PathVariable String userId){
+        ApiResponse<User> apiResponse = new ApiResponse<>();
+
         userService.deleteUser(userId);
-        return "User has been deleted";
+        apiResponse.setMessage("delete success");
+        return apiResponse;
     }
 
 }
