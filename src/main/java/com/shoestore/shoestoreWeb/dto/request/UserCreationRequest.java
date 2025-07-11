@@ -1,5 +1,7 @@
 package com.shoestore.shoestoreWeb.dto.request;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,12 +14,19 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserCreationRequest {
-    @Size(min = 3, message = "USERNAME_INVALID")
-    String username;
+
+    @Email(message = "EMAIL_INVALID")
+    String email;
 
     @Size(min = 8, message = "PASSWORD_INVALID")
     String password;
     String firstname;
     String lastname;
     LocalDate dob;
+    String address;
+
+    @Pattern(regexp = "^(\\+84|0)[0-9]{9}$", message = "PHONE_INVALID")
+    String phone;
+
+
 }

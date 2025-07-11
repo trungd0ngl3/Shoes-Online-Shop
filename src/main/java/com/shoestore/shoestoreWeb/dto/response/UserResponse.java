@@ -14,8 +14,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
-    String uID;
-    String username;
     String password;
     String firstname;
     String lastname;

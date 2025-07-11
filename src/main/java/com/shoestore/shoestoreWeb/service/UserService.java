@@ -3,6 +3,7 @@ package com.shoestore.shoestoreWeb.service;
 import com.shoestore.shoestoreWeb.dto.request.UserCreationRequest;
 import com.shoestore.shoestoreWeb.dto.request.UserUpdateRequest;
 import com.shoestore.shoestoreWeb.dto.response.UserResponse;
+import com.shoestore.shoestoreWeb.entity.Role;
 import com.shoestore.shoestoreWeb.entity.User;
 import com.shoestore.shoestoreWeb.exception.AppException;
 import com.shoestore.shoestoreWeb.exception.ErrorCode;
@@ -23,11 +24,11 @@ public class UserService {
     UserMapper userMapper;
 
     public User createUser(UserCreationRequest request){
-        if(userRepository.existsByUsername(request.getUsername()))
+        if(userRepository.existsByEmail(request.getEmail()))
             throw new AppException(ErrorCode.USER_EXISTED);
 
-        User user = (User) userMapper.toUser(request);
-
+        User user = userMapper.toUser(request);
+        user.setRole(Role.USER);
         return userRepository.save(user);
     }
 
@@ -42,7 +43,6 @@ public class UserService {
 
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
         User user = findUser(userId);
-
         userMapper.updateUser(user, request);
 
         return userMapper.toUserResponse(userRepository.save(user));
