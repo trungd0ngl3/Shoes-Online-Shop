@@ -12,6 +12,8 @@ import com.shoestore.shoestoreWeb.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +31,9 @@ public class UserService {
 
         User user = userMapper.toUser(request);
         user.setRole(Role.USER);
+        PasswordEncoder encoder = new BCryptPasswordEncoder(10);
+        user.setPassword(encoder.encode(request.getPassword()));
+
         return userRepository.save(user);
     }
 
