@@ -10,6 +10,7 @@ import com.shoestore.shoestoreWeb.dto.request.AuthenticateRequest;
 import com.shoestore.shoestoreWeb.dto.request.IntrospectRequest;
 import com.shoestore.shoestoreWeb.dto.response.AuthenticateResponse;
 import com.shoestore.shoestoreWeb.dto.response.IntrospectResponse;
+import com.shoestore.shoestoreWeb.entity.User;
 import com.shoestore.shoestoreWeb.exception.AppException;
 import com.shoestore.shoestoreWeb.exception.ErrorCode;
 import com.shoestore.shoestoreWeb.repository.UserRepository;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.awt.image.AreaAveragingScaleFilter;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +31,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.StringJoiner;
 
 @Slf4j
 @Service
@@ -42,7 +45,6 @@ public class AuthenticateService {
     protected String SIGNER_KEY;
 
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
-
         var token = request.getToken();
 
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
@@ -71,7 +73,7 @@ public class AuthenticateService {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
-        var token = generateToken(request.getEmail());
+        var token = generateToken(user);
 
         return AuthenticateResponse.builder()
                 .token(token)
@@ -79,16 +81,16 @@ public class AuthenticateService {
                 .build();
     }
 
-    private String generateToken(String email){
+    private String generateToken(User user){
 
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(email)
-                .issuer("cc")
+                .subject(user.getEmail())
+                .issuer("shoes store")
                 .issueTime(new Date())
                 .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
-                .claim("userID",userRepository.findByEmail(email).get().getUid())
+                .claim("scope",buildScope(user))
                 .build();
 
         JWSObject jwsObject = new JWSObject(header, jwtClaimsSet.toPayload());
@@ -102,6 +104,12 @@ public class AuthenticateService {
         }
     }
 
-
+    private String buildScope(User user){
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        if(!CollectionUtils.isEmpty(user.getRoles())){
+            user.getRoles().forEach(stringJoiner::add);
+        }
+        return stringJoiner.toString();
+    }
 
 }
