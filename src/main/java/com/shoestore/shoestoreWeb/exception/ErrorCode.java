@@ -1,27 +1,31 @@
 package com.shoestore.shoestoreWeb.exception;
 
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+
+@Getter
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum ErrorCode {
-    UNCATEGORIZED_ERROR(9999, "Uncategorized error"),
-    INVALID_KEY(1000, "Uncategorized error"),
-    USER_EXISTED(1001, "User existed"),
-    USERNAME_INVALID(1002, "Username must be at least 3 character"),
-    PASSWORD_INVALID(1003, "Password must be at least 8 character"),
-    EMAIL_NOT_EXISTED(1004, "Email not existed"),
-    UNAUTHORIZED(1005, "User is not authorized")
+    UNCATEGORIZED_ERROR(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_KEY(1001, "Uncategorized error", HttpStatus.BAD_REQUEST),
+    USER_EXISTED(1002, "User existed", HttpStatus.BAD_REQUEST),
+    USERNAME_INVALID(1003, "Username must be at least 3 character", HttpStatus.BAD_REQUEST),
+    PASSWORD_INVALID(1004, "Password must be at least 8 character", HttpStatus.BAD_REQUEST),
+    EMAIL_NOT_EXISTED(1005, "Email not existed", HttpStatus.NOT_FOUND),
+    UNAUTHENTICATED(1006, "User is not authorized", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED(1007, "User is not have permission", HttpStatus.FORBIDDEN),
+
     ;
-    private final int code;
-    private final String message;
+    int code;
+    String message;
+    HttpStatusCode statusCode;
 
-    ErrorCode(int code, String message) {
-        this.code = code;
-        this.message = message;
-    }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public int getCode() {
-        return code;
-    }
 }
