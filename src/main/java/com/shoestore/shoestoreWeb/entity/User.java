@@ -1,17 +1,19 @@
 package com.shoestore.shoestoreWeb.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
@@ -25,8 +27,7 @@ public class User {
     String address;
     String phone;
 
-    @Enumerated(EnumType.STRING)
-    Role role;
+    Set<String> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Order> orders;
