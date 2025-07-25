@@ -1,9 +1,6 @@
 package com.shoestore.shoestoreWeb.dto.response;
 
 import com.shoestore.shoestoreWeb.entity.Role;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,9 +13,10 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
+    String uid;
     String email;
     String firstname;
     String lastname;
     LocalDate dob;
-    Set<String> roles;
+    Set<Role> roles;
 }

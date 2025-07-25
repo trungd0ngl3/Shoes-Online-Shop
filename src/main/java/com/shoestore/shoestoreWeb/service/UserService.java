@@ -3,16 +3,17 @@ package com.shoestore.shoestoreWeb.service;
 import com.shoestore.shoestoreWeb.dto.request.UserCreationRequest;
 import com.shoestore.shoestoreWeb.dto.request.UserUpdateRequest;
 import com.shoestore.shoestoreWeb.dto.response.UserResponse;
-import com.shoestore.shoestoreWeb.entity.Role;
+import com.shoestore.shoestoreWeb.enums.Role;
 import com.shoestore.shoestoreWeb.entity.User;
 import com.shoestore.shoestoreWeb.exception.AppException;
 import com.shoestore.shoestoreWeb.exception.ErrorCode;
+import com.shoestore.shoestoreWeb.mapper.RoleMapper;
 import com.shoestore.shoestoreWeb.mapper.UserMapper;
+import com.shoestore.shoestoreWeb.repository.RoleRepository;
 import com.shoestore.shoestoreWeb.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,10 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PACKAGE, makeFinal = true)
 public class UserService {
     UserRepository userRepository;
+    RoleRepository roleRepository;
+
     UserMapper userMapper;
+
     PasswordEncoder passwordEncoder;
 
     public UserResponse createUser(UserCreationRequest request){
@@ -37,7 +41,7 @@ public class UserService {
         HashSet<String> roles = new HashSet<>();
         roles.add(Role.USER.name());
 
-        user.setRoles(roles);
+//        user.setRoles(roles);
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -53,8 +57,7 @@ public class UserService {
 
 
     public UserResponse getUser(String id){
-        return userMapper.toUserResponse(userRepository.findById(id).orElseThrow(()
-                -> new RuntimeException("User not found")));
+        return userMapper.toUserResponse(findUser(id));
     }
 
     public UserResponse getMyInfo(){
@@ -69,7 +72,14 @@ public class UserService {
 
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
         User user = findUser(userId);
+
         userMapper.updateUser(user, request);
+
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        var roles = roleRepository.findAllById(request.getRoles());
+
+        user.setRoles(new HashSet<>(roles));
 
         return userMapper.toUserResponse(userRepository.save(user));
     }

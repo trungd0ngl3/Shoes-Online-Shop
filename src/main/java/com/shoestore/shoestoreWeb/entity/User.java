@@ -27,7 +27,8 @@ public class User {
     String address;
     String phone;
 
-    Set<String> roles;
+    @ManyToMany
+    Set<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Order> orders;
