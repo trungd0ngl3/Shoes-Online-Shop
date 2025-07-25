@@ -18,6 +18,5 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long cartID;
 
-
     int quantity;
 }
