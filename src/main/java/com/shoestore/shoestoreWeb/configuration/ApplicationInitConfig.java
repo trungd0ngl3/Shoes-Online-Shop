@@ -1,6 +1,6 @@
 package com.shoestore.shoestoreWeb.configuration;
 
-import com.shoestore.shoestoreWeb.entity.Role;
+import com.shoestore.shoestoreWeb.enums.Role;
 import com.shoestore.shoestoreWeb.entity.User;
 import com.shoestore.shoestoreWeb.repository.UserRepository;
 import lombok.AccessLevel;
@@ -33,7 +33,7 @@ public class ApplicationInitConfig {
                 User user = User.builder()
                         .email("admin@gmail.com")
                         .password(passwordEncoder.encode("12345678"))
-                        .roles(roles)
+//                        .roles(roles)
                         .build();
 
                 userRepository.save(user);
