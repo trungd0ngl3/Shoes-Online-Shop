@@ -19,7 +19,7 @@ public enum ErrorCode {
     USERNAME_INVALID(1003, "Username must be at least {min} character", HttpStatus.BAD_REQUEST),
     PASSWORD_INVALID(1004, "Password must be at least {min} character", HttpStatus.BAD_REQUEST),
     EMAIL_NOT_EXISTED(1005, "Email not existed", HttpStatus.NOT_FOUND),
-    UNAUTHENTICATED(1006, "User is not authorized", HttpStatus.UNAUTHORIZED),
+    UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1007, "User is not have permission", HttpStatus.FORBIDDEN),
     DOB_INVALID(1008, "Age must at least {min}", HttpStatus.BAD_REQUEST),
     ;
