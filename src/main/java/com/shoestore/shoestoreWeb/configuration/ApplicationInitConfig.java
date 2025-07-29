@@ -19,9 +19,7 @@ import java.util.HashSet;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PACKAGE, makeFinal = true)
 public class ApplicationInitConfig {
-
     PasswordEncoder passwordEncoder;
-
 
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository){

@@ -30,11 +30,14 @@ public class RoleService {
     RoleMapper roleMapper;
 
     public RoleResponse create(RoleRequest request){
+        // map request thành role
         var role = roleMapper.toRole(request);
 
+        //tìm permission và thêm permission vào role
         var permissions = permissionRepository.findAllById(request.getPermissions());
         role.setPermissions(new HashSet<>(permissions));
 
+        // map thành RoleResponse cho controller
         return roleMapper.toRoleResponse(roleRepository.save(role));
     }
 

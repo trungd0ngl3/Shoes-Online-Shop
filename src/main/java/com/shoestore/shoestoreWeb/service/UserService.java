@@ -1,5 +1,6 @@
 package com.shoestore.shoestoreWeb.service;
 
+import com.shoestore.shoestoreWeb.constant.PredefinedRole;
 import com.shoestore.shoestoreWeb.dto.request.UserCreationRequest;
 import com.shoestore.shoestoreWeb.dto.request.UserUpdateRequest;
 import com.shoestore.shoestoreWeb.dto.response.UserResponse;
@@ -33,16 +34,17 @@ public class UserService {
     PasswordEncoder passwordEncoder;
 
     public UserResponse createUser(UserCreationRequest request){
+        // kiểm tra email
         if(userRepository.existsByEmail(request.getEmail()))
             throw new AppException(ErrorCode.USER_EXISTED);
 
+        // map request thành người dùng
         User user = userMapper.toUser(request);
 
         HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
+//        roleRepository.findById(PredefinedRole.USER_ROLE);
 
-//        user.setRoles(roles);
-
+        // mã hóa mật khẩu
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         return userMapper.toUserResponse(userRepository.save(user));
@@ -54,7 +56,6 @@ public class UserService {
                 .map(userMapper::toUserResponse)
                 .toList();
     }
-
 
     public UserResponse getUser(String id){
         return userMapper.toUserResponse(findUser(id));
@@ -72,13 +73,11 @@ public class UserService {
 
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
         User user = findUser(userId);
+        var roles = roleRepository.findAllById(request.getRoles());
 
         userMapper.updateUser(user, request);
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        var roles = roleRepository.findAllById(request.getRoles());
-
         user.setRoles(new HashSet<>(roles));
 
         return userMapper.toUserResponse(userRepository.save(user));

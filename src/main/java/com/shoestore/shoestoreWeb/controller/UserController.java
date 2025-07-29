@@ -34,15 +34,20 @@ public class UserController {
                 .result(userService.createUser(request))
                 .build();
     }
-
+    //kiểm tra người dùng có role admin
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping()
     ApiResponse<List<UserResponse>> getUsers(){
+        //lấy thông tin người dùng từ SecurityContextHolder
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // log thong tin nguoi dung
+        //log thông tin
+        //log email
         log.info("email: {}", authentication.getName());
-        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+
+        // log các quyền hạn
+        authentication.getAuthorities().forEach(grantedAuthority ->
+                log.info(grantedAuthority.getAuthority()));
 
         return ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getUsers())
@@ -56,6 +61,7 @@ public class UserController {
                 .build();
     }
 
+    // kiểm tra email trả về với email trong SecurityContextHolder
     @PostAuthorize("@returnObject.email == authentication.email")
     @GetMapping("/{userId}")
     ApiResponse<UserResponse> getUser(@PathVariable String userId){
