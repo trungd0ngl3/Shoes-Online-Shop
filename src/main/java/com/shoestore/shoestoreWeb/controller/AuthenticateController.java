@@ -2,9 +2,7 @@ package com.shoestore.shoestoreWeb.controller;
 
 
 import com.nimbusds.jose.JOSEException;
-import com.shoestore.shoestoreWeb.dto.request.ApiResponse;
-import com.shoestore.shoestoreWeb.dto.request.AuthenticateRequest;
-import com.shoestore.shoestoreWeb.dto.request.IntrospectRequest;
+import com.shoestore.shoestoreWeb.dto.request.*;
 import com.shoestore.shoestoreWeb.dto.response.AuthenticateResponse;
 import com.shoestore.shoestoreWeb.dto.response.IntrospectResponse;
 import com.shoestore.shoestoreWeb.service.AuthenticateService;
@@ -33,16 +31,20 @@ public class AuthenticateController {
                 .build();
     }
 
-    @PostMapping("/introspect")
-    ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request) throws ParseException, JOSEException {
-        var result = authenticateService.introspect(request);
-
-        return ApiResponse.<IntrospectResponse>builder()
-                .result(result)
-                .build();
+    @PostMapping("/logout")
+    ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authenticateService.logout(request);
+        return ApiResponse.<Void>builder().build();
 
     }
 
+    @PostMapping("/refresh")
+    ApiResponse<AuthenticateResponse> refreshToken(@RequestBody RefreshTokenRequest request) throws ParseException, JOSEException {
+        var result = authenticateService.refreshToken(request);
+        return ApiResponse.<AuthenticateResponse>builder()
+                .result(result)
+                .build();
+    }
 
 
 
